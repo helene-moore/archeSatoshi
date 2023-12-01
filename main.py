@@ -1,4 +1,5 @@
 import hashlib
+import json
 import os
 import shutil
 import uuid
@@ -35,9 +36,11 @@ def renommer_et_ajouter_sur_git(image_path, repo):
     # Ajouter le nouveau fichier renommé au suivi de Git
     repo.index.add([nouveau_path])
 
+
+
 # Exemple d'utilisation
 repo_url = 'https://github.com/helene-moore/archeSatoshi.git'
-destination_folder = 'e'
+destination_folder = 'm'
 
 # Cloner le référentiel Git
 repo = Repo.clone_from(repo_url, destination_folder)
@@ -45,12 +48,35 @@ repo = Repo.clone_from(repo_url, destination_folder)
 # Récupérer la liste des fichiers d'images dans le référentiel
 images = [f for f in repo.git.ls_files().split('\n') if f.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.bmp'))]
 
+
+def createJsonOfImages(image_json):
+    data = {}
+    data[image_json]= {
+                "nom": input("Entrez le nom : "),
+                "prenom": input("Entrez le prénom : "),
+                "date de creation": input("Entrez la date de création : "),
+                "Artiste": input("Entrez le nom de l'artiste : ")
+    }
+
+    imageChange = os.path.splitext(image_json)[0]
+    json_object = json.dumps(data)
+    with open(f"{destination_folder}/{imageChange}.json", 'w') as outfile:
+        outfile.write(json_object)
+        repo.index.add([f"{imageChange}.json"])
+    #return json.dumps(data, indent=4)
+
 # Renommer et ajouter chaque image renommée au suivi de Git
 for image in images:
     image_path = os.path.join(destination_folder, image)
     image_path_absolute = os.path.abspath(image_path)
     renommer_et_ajouter_sur_git(image_path_absolute, repo)
+for image_json in images:
+    createJsonOfImages(image_json)
+
+
 
 # Commit et push des changements
 repo.index.commit("Renommage et ajout automatiques d'images")
 repo.remote().push()
+
+
