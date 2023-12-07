@@ -36,6 +36,10 @@ def renommer_et_ajouter_sur_git(image_path, repo):
     # Ajouter le nouveau fichier renommé au suivi de Git
     repo.index.add([nouveau_path])
 
+    #############################
+    # Retourner le nouveau nom de fichier pour construire l'URL
+    #return nouveau_nom
+
 
 
 # Exemple d'utilisation
@@ -52,6 +56,7 @@ images = [f for f in repo.git.ls_files().split('\n') if f.lower().endswith(('.pn
 def createJsonOfImages(image_json):
     data = {}
     data[image_json]= {
+                "url": "url encore à définir !",
                 "nom": input("Entrez le nom : "),
                 "prenom": input("Entrez le prénom : "),
                 "date de creation": input("Entrez la date de création : "),
